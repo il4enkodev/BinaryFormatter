@@ -15,6 +15,8 @@ public class ByteBufferSource implements ByteSource {
         this.buffer = verifyNonNull(buffer, "buffer");
         this.count = verifyPositive(count, "count");
         initialIndex = buffer.position();
+        if (count > buffer.limit())
+            throw new IndexOutOfBoundsException("count: " + count + ", limit: " + buffer.limit());
     }
 
     @Override
@@ -29,7 +31,10 @@ public class ByteBufferSource implements ByteSource {
 
     @Override
     public void consume(IndexedByteConsumer consumer) {
-        final int max = initialIndex + count;
-
+        verifyNonNull(consumer, "consumer");
+        for (int index = initialIndex; index < count; index++) {
+            if (!consumer.accept(index, buffer.get()))
+                break;
+        }
     }
 }
