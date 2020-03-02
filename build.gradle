@@ -5,14 +5,25 @@ plugins {
 group 'com.github.il4enkodev'
 version '1.0-SNAPSHOT'
 
-targetCompatibility = 1.6
-sourceCompatibility = 1.6
-
 repositories {
     mavenCentral()
 }
 
+compileJava {
+    sourceCompatibility = 1.6
+}
+
+compileTestJava {
+    sourceCompatibility = 1.8
+}
+
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.6.0'
+    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-params', version: '5.6.0'
+    testImplementation group: 'javax.inject', name: 'javax.inject', version: '1'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.0'
 }

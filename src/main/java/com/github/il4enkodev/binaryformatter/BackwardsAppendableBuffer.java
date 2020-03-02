@@ -1,25 +1,23 @@
 package com.github.il4enkodev.binaryformatter;
 
-import static com.github.il4enkodev.binaryformatter.Preconditions.verifyNonNull;
+import static com.github.il4enkodev.binaryformatter.Preconditions.verifyNonNegative;
 
 final class BackwardsAppendableBuffer implements Appendable, CharSequence {
 
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+    static final int DEFAULT_CAPACITY = 16;
 
     private char[] chars;
     private int position;
 
     BackwardsAppendableBuffer() {
-        this(16);
+        this(DEFAULT_CAPACITY);
     }
 
     BackwardsAppendableBuffer(int initialCapacity) {
-        this(new char[initialCapacity]);
-    }
-
-    BackwardsAppendableBuffer(char[] chars) {
-        this.chars = verifyNonNull(chars, "chars");
-        position = chars.length;
+        verifyNonNegative(initialCapacity, "initialCapacity");
+        chars = new char[initialCapacity];
+        position = initialCapacity;
     }
 
     int capacity() {
@@ -46,11 +44,11 @@ final class BackwardsAppendableBuffer implements Appendable, CharSequence {
 
     @Override
     public CharSequence subSequence(int start, int end) {
-        if (end < 0 || end < start || end > length())
+        if (start < 0 || start > end || end > length())
             throw new IndexOutOfBoundsException("start: " + start + ", end: " + end + ", length: " + length());
-        int from = position + start;
-        int to = length() - end;
-        return new String(chars, from, to);
+        int offset = position + start;
+        int count = end - start;
+        return new String(chars, offset, count);
     }
 
     @Override
@@ -61,12 +59,16 @@ final class BackwardsAppendableBuffer implements Appendable, CharSequence {
 
     @Override
     public BackwardsAppendableBuffer append(CharSequence csq) {
+        if (csq == null)
+            csq = "null";
         return append(csq, 0, csq.length());
     }
 
     @Override
     public BackwardsAppendableBuffer append(CharSequence csq, int start, int end) {
-        verifyNonNull(csq, "csq");
+        if (csq == null)
+            csq = "null";
+
         if (start < 0 || start > end || start + end > csq.length()) {
             throw new IndexOutOfBoundsException(
                     "csq.length(): " + csq.length() + ", start: " + start + ", end: " + end);
@@ -117,13 +119,5 @@ final class BackwardsAppendableBuffer implements Appendable, CharSequence {
             throw new OutOfMemoryError();
         }
         return (minCapacity > MAX_ARRAY_SIZE) ? minCapacity : MAX_ARRAY_SIZE;
-    }
-
-    void dump() {
-        System.out.append(getClass().getSimpleName())
-                .append("{index: ").append(Integer.toString(position))
-                .append(", length: ").append(Integer.toString(length()))
-                .append(", capacity: ").append(Integer.toString(capacity()))
-                .append("}\n");
     }
 }
