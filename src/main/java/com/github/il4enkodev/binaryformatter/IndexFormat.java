@@ -156,6 +156,11 @@ public class IndexFormat extends Format {
         public IndexFormat alignment(Alignment alignment) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public String toString() {
+            return "WithoutIndexes";
+        }
     }
 
     final static char[] DigitTens = {

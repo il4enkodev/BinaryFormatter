@@ -83,4 +83,14 @@ public final class ByteSourceFormat extends BinaryNumberFormat {
         write(value, Byte.SIZE, buffer);
         indexFormat.write(index, maxIndex, buffer);
     }
+
+    @Override
+    public String toString() {
+        final String str = super.toString();
+        return new StringBuilder(str).deleteCharAt(str.length() - 1)
+                .append(", itemsSeparator='").append(itemsSeparator).append('\'')
+                .append(", itemsPerLine=").append(itemsPerLine)
+                .append(", indexFormat=").append(indexFormat)
+                .append("}").toString();
+    }
 }

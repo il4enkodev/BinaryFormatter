@@ -112,4 +112,15 @@ public abstract class Format {
             buffer.append(space);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                "{ groupSize=" + groupSize +
+                ", groupingSeparator='" + groupingSeparator + '\'' +
+                ", minWidth=" + minWidth +
+                ", prefix='" + prefix + '\'' +
+                ", suffix='" + suffix + '\'' +
+                ", alignment=" + alignment +
+                '}';
+    }
 }
